@@ -1,0 +1,356 @@
+*,
+*::before,
+*::after{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html{
+	scroll-behavior: smooth;
+}
+
+body{
+	font-family: 'Quicksand', sans-serif;
+
+	/*position: relative;	/*Cikal bakal parent untuk nav & aside yang bakal absolute position (ngambang)*/
+
+	/*Predetermined dimension based on height - FULLSCREEN*/
+	width: 100%;
+	height: 100vh;
+		
+	/*Flexbox element inside body*/
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+
+	/*No scroll on <body>; atur efek terkait scroll di .scroll-parent*/
+	overflow: hidden;
+
+	/*BG Image - Mundur 1 direktori dulu (ke direktori assets)*/
+	background-image: url('img/gridline.png');
+}
+
+/*BASE PARENT : contain many scrollable element*/
+.scroll-parent{
+
+	/*Enable y-axis scroll inside this container*/
+	overflow-y: scroll;
+
+	/*Scroll snapping (PROTIP : JANGAN DIPAKE BARENGAN SMOOTH SCROLL - GA BISA DIPAKE BARENGAN)*/
+	scroll-snap-type: y mandatory;		/*mandatory = scroll dikit langsung ubah, proximity = kalo scroll udah dominan di elemen lain baru berubah*/
+	scroll-snap-stop: always;			/*normal = default, always = ga bisa lompat (Perubahan terasa ketika di mobile/screenswiping)*/
+
+	/*Hide inner .scroll-parent scrollbar*/
+	scrollbar-width: none; 		/* Firefox n chrome*/
+    -ms-overflow-style: none;  	/* Internet Explorer 10+ */
+
+    /*Karena yang bisa scroll cuma bagian ini (efek overflow:scroll), peletakkannya sudah bukan di html*/
+    /*scroll-behavior: smooth;	/*Baris berikut ga working selama = scroll-snap-type:bukan 'none'*/
+
+}
+
+.scroll-child{
+	/*Scroll snap each child in container*/
+	scroll-behavior: smooth;
+	scroll-snap-align: center;
+}
+
+.page-panel{
+	/*Responsive fullscreen page*/
+	height: 100vh;
+	width: 100vw;
+
+	/*Adjusting inner content inside the .page-panel*/
+	display: flex;
+	flex-direction: column;
+
+	justify-content: center;
+	align-items: center;
+}
+
+/*Floating element NAVBAR & SIDEBAR*/		
+nav.navbar{
+	/* Debugging element */
+	/* background-color:#cccccc55; */
+	text-align: center;
+
+	flex-shrink: 1;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+
+	z-index: 99;
+}
+
+nav.navbar .navbar-content{
+	/*Parent nav.navbar udah absolute, hapus efek turunannya*/
+	position: unset;
+
+	width: 100vw;
+
+	display: flex;
+ 	flex-direction: row;
+   	align-items: center;
+
+    justify-content: center;			
+}
+
+nav.navbar .navbar-content ul.navbar-list{
+	display: flex;
+	flex-wrap: nowrap;
+	flex-direction: row;
+	justify-content: center;
+	gap: 2rem 2rem;	
+			
+	margin-block: 0.3em;
+	margin-inline: 1rem;	
+			
+}
+
+nav.navbar .navbar-content ul.navbar-list li{
+	list-style-type: none;
+	align-self: center;
+}
+
+nav.navbar .navbar-content ul.navbar-list li a{
+	font-size: 1.05em;
+	font-weight: 500;
+	color: black;
+
+	text-decoration: none;
+	transition: all 0.5s ease;
+
+	padding: 1rem;
+
+	height: fit-content;		
+}
+
+nav.navbar .navbar-content ul.navbar-list li a:hover{
+	color: white;
+	background-color: rgba(44, 44, 44, 0.7);
+}
+
+/*Goal : Bikin navbar meng-highlighted <a> secara otomatis sesuai posisi halaman yang dibuka*/
+nav.navbar .navbar-content ul.navbar-list li a:focus{
+	color: white;
+	background-color: rgba(44, 44, 44, 0.7);
+}
+
+/*
+nav.navbar .navbar-content ul.navbar-list li a:focus-visible{
+	color: red;
+	background-color: grey;
+}
+*/
+
+/*MASIH EKSPERIMEN*/
+
+aside.sidebar{
+	/* Debugging element */
+	/* background-color: #333333cc; */
+	text-align: center;
+
+	flex-shrink: 1;
+			
+	overflow: hidden;
+	position: absolute;
+	right: 0;
+
+	z-index: 999;
+
+}
+
+
+
+aside.sidebar .sidebar-content{
+
+	/*pisahkan behaviour dari Parent 'aside.sidebar' yang sblmnya absolute, hapus efek turunannya*/
+	position: unset;
+
+	height: 100vh;
+	width: fit-content;
+
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+aside.sidebar .sidebar-content .sidebar-open-btn {
+	writing-mode: vertical-rl;
+
+	font-size: 1.05em;
+	font-weight: 900;
+	color: black;
+
+	text-decoration: none;
+	transition: all 0.5s ease;
+
+	padding: 0.25rem;
+	width: fit-content;	
+}
+
+aside.sidebar .sidebar-content .sidebar-open-btn:hover {
+	color: white;
+	background-color: rgba(44, 44, 44, 0.7);
+}
+
+/*Inherit behaviour from .page-panel - representasi panel halaman*/
+.page-panel.hidden-sidebar{
+	width: 0; /*DEFAULT : Kondisi sidebar panel sembunyi*/
+    
+    /*ubah right ke left untuk ganti*/    
+    right: 0;
+    top: 0;
+    z-index: 1;
+
+    overflow: hidden;
+    background-image: url('img/gridline.png');
+    background-color: rgba(144, 144, 144, 1);
+    opacity: 1;
+        
+    transition: 0.5s;
+
+    position: fixed;
+}
+
+/*Window panel content*/
+/*
+Unachieved goal : fixed element flex item yang berlaku disemua bagian
+Misal : element <p> didalam parent flex-nya punya ukuran yang SELALU sama, DAN JUGA ukuran hurufnya menyesuaikan tinggi dari element <p>
+*/
+.panel-content{
+	/*Adjusting inner content inside the .page-panel*/
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+
+	justify-content: center;
+	align-content: center;
+
+	width: 80vw;
+	height: 90vh;
+
+	padding: 0.2rem;
+	gap: 0.5rem;
+
+	/*Container debugging*/
+	/  *border-style: dotted;*/
+}
+
+.panel-content .content-title{
+	font-weight: 900;
+
+	align-self: center;
+
+	flex-grow: 1;
+	
+}
+
+.panel-content .content-img{
+
+	/*FINALLY! KONTEN SECARA DINAMIS MENYESUAIKAN UKURANNYA SENDIRI (relatif ke parent)*/
+	align-self: center;
+	overflow: auto;	
+	
+}
+
+.panel-content .content-desc{
+	min-height: 100px;
+	align-self: center;		
+
+	/*Hide inner .scroll-parent scrollbar*/
+	scrollbar-width: none; 		/* Firefox n chrome*/
+    -ms-overflow-style: none;  	/* Internet Explorer 10+ */
+	overflow-y: scroll;
+	
+	flex-grow: 2;
+		
+}
+
+.panel-content .content-desc p{
+	display: inline-block;
+	height: 100%;
+	text-align: justify;
+	font-size: 2.3cqmin;
+}
+
+/*Coba ngide, kalo <500 ilangin aja navbar-nya*/
+@media screen and (max-width:1200px){
+	nav.navbar{
+		display: none;
+	}
+
+	.panel-content{
+		width: 95vw;
+		height: 100vh;
+		justify-content: space-evenly;
+	}
+
+	.panel-content .content-img{
+		max-width: 90vw;
+
+	}
+
+	.panel-content .content-desc p{
+		font-size: 1.7cqmax;
+	}
+}
+
+@media screen and (max-width:700px){
+	.panel-content{
+		width: 80vw;
+	}
+
+	.panel-content .content-title{
+		flex-grow: 0;
+	}
+
+	.panel-content .content-img{
+		max-width: 80vw;
+		min-height: 70vh;
+		object-fit: cover;
+	}
+
+	.panel-content .content-desc p{
+		min-height: 90%;
+	}
+}
+
+
+/*GRID LAYOUT TEST*/
+
+/*
+.grid-layout-test{
+	
+	display: grid;
+	grid-template-columns: auto auto;
+
+	justify-items: center;
+
+	width: 50vw;
+	height: 50vh;
+
+	gap: 1%;
+
+	
+	background-color: red;
+	border-style: solid;
+}
+
+.grid-item-test{
+	background-color: rgba(255, 255, 255, 0.8);
+  	border: 1px solid rgba(0, 0, 0, 0.8);
+  	padding: 20px;
+  	font-size: 30px;
+  	text-align: center;
+  	align-self: center;
+
+
+  	
+	background-color: whitesmoke;
+	border-style: dotted;
+	
+}
+*/
